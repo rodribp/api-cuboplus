@@ -39,10 +39,8 @@ export const getEvent = (req, res) => {
 
         const foundEvent = data.find(event => event.uuid == uuid);
 
-        console.log(foundEvent);
-
         if (!foundEvent) {
-            result.error = "Evento no encontrado";
+            result.error = "Evento not found";
             res.status(404).json(result);
             
         } else {
@@ -60,7 +58,8 @@ export const setEvent = (req, res) => {
         error: ""
     }
 
-    const { title, location, start, timeStart, end, timeEnd, type, eventUrl } = req.body;
+    const { title, location, description, start, timeStart, end, timeEnd, type, eventUrl } = req.body;
+    const filePath = req.file.path;
     const uuid = uuidv4();
 
 
@@ -71,16 +70,64 @@ export const setEvent = (req, res) => {
 
         const data = JSON.parse(jsonString);
 
+        if ( !title ) {
+            result.error = "Title is missing";
+            res.status(400).json(result);
+            return;
+        }
+
+        if ( !location ) {
+            result.error = "Location is missing";
+            res.status(400).json(result);
+            return;
+        }
+
+        if ( !start ) {
+            result.error = "Starting Date is missing";
+            res.status(400).json(result);
+            return;
+        }
+
+        if ( !timeStart ) {
+            result.error = "Starting Time is missing";
+            res.status(400).json(result);
+            return;
+        }
+
+        if ( !end ) {
+            result.error = "Ending Date is missing";
+            res.status(400).json(result);
+            return;
+        }
+
+        if ( !timeEnd ) {
+            result.error = "Ending Time is missing";
+            res.status(400).json(result);
+            return;
+        }
+
+        if ( !type ) {
+            result.error = "Type is missing";
+            res.status(400).json(result);
+            return;
+        }
+
+        if ( !filePath ) {
+            filePath = "src/img/events/default.png";
+        }
+
         const newEvent = {
             uuid: uuid,
             title: title,
+            description: description,
             location: location,
             start: start,
             timeStart: timeStart,
             end: end,
             timeEnd: timeEnd,
             type: type,
-            eventUrl: eventUrl
+            eventUrl: eventUrl,
+            imgPath: filePath
         }
 
         data.push(newEvent);
