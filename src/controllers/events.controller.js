@@ -1,5 +1,6 @@
-import { readFile, writeFile } from "fs";
+import { readFile, writeFile, unlink } from "fs";
 import { v4 as uuidv4 } from "uuid";
+import path from 'path';
 
 export const getEvents = (req, res) => {
     const result = {
@@ -377,27 +378,42 @@ export const deleteEvent = (req, res) => {
 
         const data = JSON.parse(jsonString);
 
-        const foundIndex = data.findIndex((event) => event.uuid === uuid);
+        const foundEvent = data.find((event) => event.uuid === uuid);
 
-        if ( foundIndex === -1 ) {
+        if (!foundEvent) {
             result.error = "Event not found";
             res.status(400).json(result);
             return;
         }
 
-        data.splice(foundIndex, 1);
+        const imgPath = path.join('./src/img/events', foundEvent.fileName);
 
-        const updatedJsonString = JSON.stringify(data, null, 2);
+        console.log(imgPath);
 
-        writeFile("./src/json/events.json", updatedJsonString, (err) => {
+        unlink(imgPath, (err) => {
             if (err) {
-                result.error = "Error writing to the events file";
+                result.error = "Error deleting image file";
                 res.status(400).json(result);
                 return;
             }
 
-            result.status = 1;
-            res.json(result);
-        });
+            
+            const foundIndex = data.indexOf(foundEvent);
+    
+            data.splice(foundIndex, 1);
+    
+            const updatedJsonString = JSON.stringify(data, null, 2);
+    
+            writeFile("./src/json/events.json", updatedJsonString, (err) => {
+                if (err) {
+                    result.error = "Error writing to the events file";
+                    res.status(400).json(result);
+                    return;
+                }
+    
+                result.status = 1;
+                res.json(result);
+            });
+        })
     });
 }
