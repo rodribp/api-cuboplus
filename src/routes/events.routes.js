@@ -11,9 +11,10 @@ const storage = multer.diskStorage({
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
         const ext = path.extname(file.originalname);
-        cb(null, file.fieldname + '-' + uniqueSuffix + ext);
+        cb(null, "image" + '-' + uniqueSuffix + ext);
     }
 })
+
 
 const upload = multer ({ storage: storage, });
 
@@ -22,5 +23,7 @@ const router = Router();
 router.get("/", eventsController.getEvents);
 router.get("/:uuid", eventsController.getEvent);
 router.post("/", verifyToken, upload.single('image'), eventsController.setEvent);
+router.put("/:uuid", verifyToken, upload.single('image'), eventsController.editEvent);
+router.delete("/:uuid", verifyToken, eventsController.deleteEvent);
 
 export default router;
