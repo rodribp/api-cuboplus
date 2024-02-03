@@ -22,6 +22,7 @@ const router = Router();
 
 router.get("/", eventsController.getEvents);
 router.get("/:uuid", eventsController.getEvent);
+router.get("/search/:input", eventsController.searchEvents);
 router.post("/", verifyToken, upload.single('image'), eventsController.setEvent);
 router.put("/:uuid", verifyToken, upload.single('image'), eventsController.editEvent);
 router.delete("/:uuid", verifyToken, eventsController.deleteEvent);

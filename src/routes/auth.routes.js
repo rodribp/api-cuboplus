@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { createUser, signIn } from "../controllers/auth.controller";
+import { createUser, signIn, verifyUserExist, verifyJwt } from "../controllers/auth.controller";
 const router = Router();
 
+router.get('/verify/:jwt', verifyJwt);
+router.get('/firstUser', verifyUserExist);
 router.post('/signin', signIn);
 router.post('/signup', createUser);
 

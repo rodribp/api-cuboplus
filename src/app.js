@@ -8,7 +8,7 @@ import eventsRoutes from './routes/events.routes';
 import authRoutes from './routes/auth.routes';
 
 const app = express();
-const imgPath = path.join(__dirname, 'img/events');
+const imgPath = path.join('./src/img/events');
 
 app.set("pkg", pkg);
 app.use(express.json());

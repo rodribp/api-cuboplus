@@ -2,6 +2,10 @@ import { readFile, writeFile, unlink } from "fs";
 import { v4 as uuidv4 } from "uuid";
 import path from 'path';
 
+const titleLimit = 50;
+const locationLimit = 50;
+const descriptionLimit = 500;
+
 export const getEvents = (req, res) => {
     const result = {
         status: 0,
@@ -11,7 +15,7 @@ export const getEvents = (req, res) => {
     readFile("./src/json/events.json", "utf-8", (err, jsonString) => {
         if (err) {
             result.error = err;
-            res.status(400).json(result);
+            res.status(500).json(result);
             return;
         }
         result.status = 1;
@@ -31,8 +35,8 @@ export const getEvent = (req, res) => {
 
     readFile("./src/json/events.json", "utf-8", (err, jsonString) => {
         if (err) {
-            result.error = err;
-            res.status(400).json(result);
+            result.error = "Error reading file";
+            res.status(500).json(result);
             return;
         }
 
@@ -51,6 +55,43 @@ export const getEvent = (req, res) => {
             res.json(result);
         }
     })
+}
+
+export const searchEvents = (req, res) => {
+    const result = {
+        status: 0,
+        error: ""
+    }
+
+    const input = req.params.input.toLowerCase();
+
+    readFile("./src/json/events.json", "utf-8", (err, jsonString) => {
+        if (err) {
+            result.error = "Error reading file";
+            res.status(500).json(result);
+            return;
+        }
+
+        const data = JSON.parse(jsonString);
+
+        const foundEvents = data.filter(event => {
+            const titleMatch = event.title.toLowerCase().includes(input);
+            const locationMatch = event.location.toLowerCase().includes(input);
+            const typeMatch = event.type.toLowerCase().includes(input);
+
+            return titleMatch || locationMatch || typeMatch;
+        });
+
+        if ( !foundEvents ) {
+            result.error = "Events not found";
+            res.status(404).json(result);
+        } else {
+            result.status = 1;
+            result.data = foundEvents;
+
+            res.json(result);
+        }
+    });
 }
 
 // Función para validar el formato de fecha
@@ -81,7 +122,7 @@ export const setEvent = (req, res) => {
     readFile("./src/json/events.json", "utf-8", (err, jsonString) => {
         if (err) {
             result.error = "Error reading file";
-            res.status(400).json(result);
+            res.status(500).json(result);
             return;
         }
 
@@ -93,7 +134,7 @@ export const setEvent = (req, res) => {
             return;
         }
 
-        if ( title.length > 20 ) {
+        if ( title.length > titleLimit ) {
             result.error = "Title can't be more than 20 characters long";
             res.status(400).json(result);
             return;
@@ -105,13 +146,13 @@ export const setEvent = (req, res) => {
             return;
         }
 
-        if ( location.length > 20 ) {
+        if ( location.length > locationLimit ) {
             result.error = "Location can't be more than 20 characters long";
             res.status(400).json(result);
             return;
         }
 
-        if ( description.length > 500 ) {
+        if ( description.length > descriptionLimit ) {
             result.error = "Description can't be more than 500 characters long";
             res.status(400).json(result);
             return;
@@ -168,7 +209,7 @@ export const setEvent = (req, res) => {
 
         if (date1 > date2) {
             result.error = "Starting date can't be more than the ending date of the event";
-            res.status(400).json(result);
+            res.status(500).json(result);
             return;
         }
 
@@ -193,7 +234,7 @@ export const setEvent = (req, res) => {
         writeFile("./src/json/events.json", updatedJsonString, err => {
             if (err) {
                 result.error = "Error writing to the events file";
-                res.status(400).json(result);
+                res.status(500).json(result);
                 return;
             }
 
@@ -227,7 +268,7 @@ export const editEvent = (req, res) => {
     readFile("./src/json/events.json", "utf-8", (err, jsonString) => {
         if (err) {
             result.error = "Error reading file";
-            res.status(400).json(result);
+            res.status(500).json(result);
             return;
         }
 
@@ -247,7 +288,7 @@ export const editEvent = (req, res) => {
             return;
         }
 
-        if ( title.length > 20 ) {
+        if ( title.length > titleLimit ) {
             result.error = "Title can't be more than 20 characters long";
             res.status(400).json(result);
             return;
@@ -259,13 +300,13 @@ export const editEvent = (req, res) => {
             return;
         }
 
-        if ( location.length > 20 ) {
+        if ( location.length > locationLimit ) {
             result.error = "Location can't be more than 20 characters long";
             res.status(400).json(result);
             return;
         }
 
-        if ( description.length > 500 ) {
+        if ( description.length > descriptionLimit ) {
             result.error = "Description can't be more than 500 characters long";
             res.status(400).json(result);
             return;
@@ -322,7 +363,7 @@ export const editEvent = (req, res) => {
 
         if (date1 > date2) {
             result.error = "Starting date can't be more than the ending date of the event";
-            res.status(400).json(result);
+            res.status(500).json(result);
             return;
         }
 
@@ -349,7 +390,7 @@ export const editEvent = (req, res) => {
         writeFile("./src/json/events.json", updatedJsonString, err => {
             if (err) {
                 result.error = "Error writing to the events file";
-                res.status(400).json(result);
+                res.status(500).json(result);
                 return;
             }
 
@@ -372,7 +413,7 @@ export const deleteEvent = (req, res) => {
     readFile("./src/json/events.json", (err, jsonString) => {
         if (err) {
             result.error = "Error reading file";
-            res.status(400).json(result);
+            res.status(500).json(result);
             return;
         }
 
@@ -382,18 +423,16 @@ export const deleteEvent = (req, res) => {
 
         if (!foundEvent) {
             result.error = "Event not found";
-            res.status(400).json(result);
+            res.status(404).json(result);
             return;
         }
 
         const imgPath = path.join('./src/img/events', foundEvent.fileName);
 
-        console.log(imgPath);
-
         unlink(imgPath, (err) => {
             if (err) {
                 result.error = "Error deleting image file";
-                res.status(400).json(result);
+                res.status(500).json(result);
                 return;
             }
 
@@ -407,7 +446,7 @@ export const deleteEvent = (req, res) => {
             writeFile("./src/json/events.json", updatedJsonString, (err) => {
                 if (err) {
                     result.error = "Error writing to the events file";
-                    res.status(400).json(result);
+                    res.status(500).json(result);
                     return;
                 }
     
