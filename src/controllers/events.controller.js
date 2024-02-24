@@ -364,34 +364,50 @@ export const editEvent = (req, res) => {
             res.status(400).json(result);
             return;
         }
-
-        if ((imgArray.length - deleteIndicator.length) + data[foundIndex].files.length > 10) {
-            result.error = "Files cap for each event is settled to 10";
-            res.status(500).json(result);
-            return;
-        }
-
+        
         let svImgArr = data[foundIndex].files;
 
-        if ( deleteIndicator.length > 0 ) {
-            deleteIndicator.map((indicator, index) => {
-                const imgPath = path.join('./src/img/events', svImgArr[indicator]);
+        console.log(deleteIndicator.length);
 
-                svImgArr.splice(indicator, 1);
-                unlink(imgPath, (err) => {
-                    if (err) {
-                        result.error = "Error deleting image file";
-                        res.status(500).json(result);
-                    }
+        if (deleteIndicator !== undefined) {
+            if ((imgArray.length - deleteIndicator.length) + data[foundIndex].files.length > 10) {
+                result.error = "Files cap for each event is settled to 10";
+                res.status(500).json(result);
+                return;
+            }
+            
+            if ( deleteIndicator.length > 1 ) {
+                deleteIndicator.map((indicator, index) => {
+                    const imgPath = path.join('./src/img/events', svImgArr[indicator]);
+
+                    svImgArr.splice(indicator, 1);
+                    unlink(imgPath, (err) => {
+                        if (err) {
+                            result.error = "Error deleting image file";
+                            res.status(500).json(result);
+                            return;
+                        }
+                    });
                 });
-            });
+            }
+
+            if (deleteIndicator.length === 1) {
+                const imgPath = path.join('./src/img/events', svImgArr[deleteIndicator]);
+
+                    svImgArr.splice(deleteIndicator, 1);
+                    unlink(imgPath, (err) => {
+                        if (err) {
+                            result.error = "Error deleting image file";
+                            res.status(500).json(result);
+                            return;
+                        }
+                    });
+            }
         }
 
         if ( imgArray.length == 0 ) {
             imgArray = svImgArr;
-        }
-        
-        if (imgArray.length > 0) {
+        } else {
             imgArray = svImgArr.concat(imgArray);
         }
 
@@ -464,32 +480,35 @@ export const deleteEvent = (req, res) => {
             return;
         }
 
-        const imgPath = path.join('./src/img/events', foundEvent.fileName);
+        foundEvent.files.map((file) => {
+            const imgPath = path.join('./src/img/events', file);
 
-        unlink(imgPath, (err) => {
+            unlink(imgPath, (err) => {
+                if (err) {
+                    result.error = "Error deleting image file";
+                    res.status(500).json(result);
+                    return;
+                }
+            })
+        })
+
+        const foundIndex = data.indexOf(foundEvent);
+        
+        data.splice(foundIndex, 1);
+
+        const updatedJsonString = JSON.stringify(data, null, 2);
+
+        writeFile("./src/json/events.json", updatedJsonString, (err) => {
             if (err) {
-                result.error = "Error deleting image file";
+                result.error = "Error writing to the events file";
                 res.status(500).json(result);
                 return;
             }
 
-            
-            const foundIndex = data.indexOf(foundEvent);
-    
-            data.splice(foundIndex, 1);
-    
-            const updatedJsonString = JSON.stringify(data, null, 2);
-    
-            writeFile("./src/json/events.json", updatedJsonString, (err) => {
-                if (err) {
-                    result.error = "Error writing to the events file";
-                    res.status(500).json(result);
-                    return;
-                }
-    
-                result.status = 1;
-                res.json(result);
-            });
-        })
+            result.status = 1;
+            res.json(result);
+        });
+
+        
     });
 }

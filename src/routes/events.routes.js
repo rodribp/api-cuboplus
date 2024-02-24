@@ -16,7 +16,9 @@ const storage = multer.diskStorage({
 })
 
 
-const upload = multer ({ storage: storage, });
+const upload = multer ({ storage: storage, 
+                        //we limit file size that multer receives to 10MB
+                        limits: {fileSize: 10000000}});
 
 const router = Router();
 
