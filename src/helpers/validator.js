@@ -131,8 +131,3 @@ class Validator {
         return true;
     }
 }
-
-const obj = new Validator();
-
-!obj.validatePassword("h(lAaaaa") ? console.log(obj.getError()) : console.log("PASSED");
-
