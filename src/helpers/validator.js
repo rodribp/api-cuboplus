@@ -147,4 +147,72 @@ class Validator {
 
         return true;
     }
+
+    validateTime(timeString) {
+        const obj = new Validator();
+
+        if (!obj.validateString(timeString)) {
+            this.error = obj.getError();
+            return false;
+        }
+
+        const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
+        if (!timeRegex.test(timeString)) {
+            this.error = "Invalid time format. Use HH:mm (24-hour format).";
+            return false;
+        }
+
+        return true;
+    }
+
+    //method to validate a value is on a list
+    validateListValue(list, value) {
+
+        if (!Array.isArray(list)) {
+            this.error = "Input is not a list (Array)";
+            return false;
+        }
+
+        if (value === null || value === undefined) {
+            this.error = "Value cannot be undefined or null";
+            return false;
+        }
+
+        if (!list.includes(value)) {
+            this.error = `Value ${value} was not found in the list ${JSON.stringify(list)}`;
+            return false; 
+        }
+
+        return true;
+    }
+
+    //method to validate a url
+    validateUrl(url) {
+        const obj = new Validator();
+
+        if (!obj.validateString(url)) {
+            this.error = obj.getError();
+            return false;
+        }
+
+        const urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
+        if (!urlRegex.test(url)) {
+            this.error = "Invalid URL format";
+            return false;
+        }
+
+        return true;
+    }
+
+    validateArray(array) {
+
+        if (!Array.isArray(array)) {
+            this.error = "Input is not an array";
+            return false;
+        }
+
+        return true;
+    }
 }
+
+module.exports = Validator;
