@@ -106,16 +106,21 @@ export const setEvent = (req, res) => {
         error: ""
     }
 
-    let fileName = "";
+    let fileNames = "";
 
     const { title, location, description, start, timeStart, end, timeEnd, type, eventUrl } = req.body;
     
     try {
-        fileName = req.file.filename;
-        
+        fileNames = req.files;
     } catch (err) {
-
+        result.error = "Error receiving images";
+        res.status(500).json(result);
+        return;
     }
+
+    let imgArray = fileNames.map((file) => {
+        return file.filename;
+    })
 
     const uuid = uuidv4();
 
@@ -200,8 +205,8 @@ export const setEvent = (req, res) => {
             return;
         }
 
-        if ( !fileName ) {
-            fileName = "default.png";
+        if ( imgArray.length == 0 ) {
+            imgArray = ["default.png"];
         }
 
         const date1 = new Date(start);
@@ -224,7 +229,7 @@ export const setEvent = (req, res) => {
             timeEnd: timeEnd,
             type: type,
             eventUrl: eventUrl,
-            fileName: fileName
+            files: imgArray
         }
 
         data.push(newEvent);
@@ -253,15 +258,21 @@ export const editEvent = (req, res) => {
         error: ""
     }
 
-    let fileName = "";
+    let fileNames = "";
 
-    const { title, location, description, start, timeStart, end, timeEnd, type, eventUrl } = req.body;
+    const { title, location, description, start, timeStart, end, timeEnd, type, eventUrl, deleteIndicator } = req.body;
     
     try {
-        fileName = req.file.filename;
+        fileNames = req.files;
     } catch (err) {
-
+        result.error = "Error receiving files";
+        res.status(500).json(result);
+        return;
     }
+
+    let imgArray = fileNames.map((file) => {
+        return file.filename;
+    })
 
     const uuid = req.params.uuid;
 
@@ -354,8 +365,34 @@ export const editEvent = (req, res) => {
             return;
         }
 
-        if ( !fileName ) {
-            fileName = data[foundIndex].fileName;
+        if ((imgArray.length - deleteIndicator.length) + data[foundIndex].files.length > 10) {
+            result.error = "Files cap for each event is settled to 10";
+            res.status(500).json(result);
+            return;
+        }
+
+        let svImgArr = data[foundIndex].files;
+
+        if ( deleteIndicator.length > 0 ) {
+            deleteIndicator.map((indicator, index) => {
+                const imgPath = path.join('./src/img/events', svImgArr[indicator]);
+
+                svImgArr.splice(indicator, 1);
+                unlink(imgPath, (err) => {
+                    if (err) {
+                        result.error = "Error deleting image file";
+                        res.status(500).json(result);
+                    }
+                });
+            });
+        }
+
+        if ( imgArray.length == 0 ) {
+            imgArray = svImgArr;
+        }
+        
+        if (imgArray.length > 0) {
+            imgArray = svImgArr.concat(imgArray);
         }
 
         const date1 = new Date(start);
@@ -378,12 +415,12 @@ export const editEvent = (req, res) => {
             timeEnd: timeEnd,
             type: type,
             eventUrl: eventUrl,
-            fileName: fileName
+            files: imgArray
         }
 
         const updatedData = [...data];
 
-        updatedData[foundIndex] = updatedEvent
+        updatedData[foundIndex] = updatedEvent;
 
         const updatedJsonString = JSON.stringify(updatedData, null, 2);
 

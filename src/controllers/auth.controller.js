@@ -1,4 +1,4 @@
-import { compare, hash } from 'bcrypt';
+import { compare, hash } from 'bcryptjs'
 import { config } from 'dotenv';
 import { readFile, writeFile } from 'fs';
 import jwt from 'jsonwebtoken';

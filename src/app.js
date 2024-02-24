@@ -10,6 +10,8 @@ import authRoutes from './routes/auth.routes';
 const app = express();
 const imgPath = path.join('./src/img/events');
 
+  
+
 app.set("pkg", pkg);
 app.use(express.json());
 app.use(morgan("dev"));

@@ -1,1 +1,98 @@
-[]
+[
+  {
+    "uuid": "8CF4BDA6-6543-0244-ADD9-74E792E3C976",
+    "title": "viverra. Donec",
+    "location": "tincidunt pede",
+    "description": "Sed molestie. Sed id risus quis diam luctus lobortis. Class",
+    "start": "Feb 3, 2024",
+    "timeStart": "17:00",
+    "end": "Feb 4, 2024",
+    "timeEnd": "21:00",
+    "type": "organization",
+    "eventUrl": "http://facebook.com",
+    "fileName": "default.png"
+  },
+  {
+    "uuid": "6700BC0C-4709-00BB-2796-C48D74B74E55",
+    "title": "sem. Pellentesque",
+    "location": "enim. Curabitur",
+    "description": "elit, dictum eu, eleifend nec, malesuada ut, sem. Nulla interdum.",
+    "start": "Feb 10, 2024",
+    "timeStart": "02:16",
+    "end": "Feb 10, 2024",
+    "timeEnd": "18:55",
+    "type": "class",
+    "eventUrl": "http://guardian.co.uk",
+    "fileName": "default.png"
+  },
+  {
+    "uuid": "28D734EF-FC13-612E-28C9-84783E5AB205",
+    "title": "ultrices posuere",
+    "location": "odio vel",
+    "description": "Quisque ornare tortor at risus. Nunc ac sem ut dolor",
+    "start": "Feb 19, 2024",
+    "timeStart": "06:07",
+    "end": "Feb 19, 2024",
+    "timeEnd": "07:19",
+    "type": "event",
+    "eventUrl": "http://pinterest.com",
+    "fileName": "default.png"
+  },
+  {
+    "uuid": "E68A50AD-BA68-11C6-5B28-8A65B1DDD5B8",
+    "title": "ac tellus.",
+    "location": "sed, sapien.",
+    "description": "eleifend egestas. Sed pharetra, felis eget varius ultrices, mauris ipsum",
+    "start": "Feb 25, 2024",
+    "timeStart": "07:00",
+    "end": "Feb 25, 2024",
+    "timeEnd": "23:02",
+    "type": "class",
+    "eventUrl": "http://whatsapp.com",
+    "fileName": "default.png"
+  },
+  {
+    "uuid": "81EF9029-E3AA-5D6A-0D84-F0278A9CD085",
+    "title": "dolor dolor,",
+    "location": "vitae mauris",
+    "description": "parturient montes, nascetur ridiculus mus. Aenean eget magna. Suspendisse tristique",
+    "start": "Feb 28, 2024",
+    "timeStart": "12:49",
+    "end": "Feb 28, 2024",
+    "timeEnd": "14:06",
+    "type": "meetup",
+    "eventUrl": "http://baidu.com",
+    "fileName": "default.png"
+  },
+  {
+    "uuid": "2422d444-ebd0-4c58-ae9c-de4ffb79a783",
+    "title": "Cubo+ meetup",
+    "description": "Join us at Moris Rooftop on downtown San Salvador to meet the 2023 students!! let's have some fun",
+    "location": "Moris Rooftop",
+    "start": "2024-03-15 00:00",
+    "timeStart": "17:00",
+    "end": "2024-03-15 00:00",
+    "timeEnd": "21:00",
+    "type": "meetup",
+    "eventUrl": "https://x.com",
+    "fileName": "image-1707177883110-83398005.jpg"
+  },
+  {
+    "uuid": "ab23e3d1-881d-4e76-8fee-1f8077f2a750",
+    "title": "Cubo+ meetup",
+    "description": "",
+    "location": "Moris Rooftop",
+    "start": "2024-02-17 00:00",
+    "timeStart": "17:00",
+    "end": "2024-02-17 00:00",
+    "timeEnd": "21:00",
+    "type": "meetup",
+    "eventUrl": "",
+    "files": [
+      "image-1707957787388-591138419.webp",
+      "image-1707957787391-556742502.webp",
+      "image-1707957787410-243879933.webp",
+      "image-1708370199537-211415774.webp"
+    ]
+  }
+]
