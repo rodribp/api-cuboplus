@@ -44,7 +44,7 @@ class Validator {
             const obj = new Validator();
 
             if (!obj.validateNaturalNumber(length)) {
-                this.error = obj.error;
+                this.error = obj.getError();
                 return false;
             }
     
@@ -63,7 +63,7 @@ class Validator {
         const obj = new Validator();
 
         if (!obj.validateString(dateString)) {
-            this.error = obj.error;
+            this.error = obj.getError();
             return false;
         }
 
@@ -81,7 +81,7 @@ class Validator {
         const obj = new Validator();
 
         if (!obj.validateString(emailString)) {
-            this.error = obj.error;
+            this.error = obj.getError();
             return false;
         }
 
@@ -99,7 +99,7 @@ class Validator {
         const obj = new Validator();
 
         if (!obj.validateString(password)) {
-            this.error = obj.error;
+            this.error = obj.getError();
             return false;
         }
 
@@ -125,6 +125,23 @@ class Validator {
 
         if (!/[^a-zA-Z0-9]/.test(password)) {
             this.error = "Password must contain at least one special character";
+            return false;
+        }
+
+        return true;
+    }
+
+    //method to validate uuid format
+    validateUuid(uuid) {
+        const obj = new Validator();
+
+        if (!obj.validateString(uuid)) {
+            this.error = obj.getError();
+        }
+
+        const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        if (!uuidRegex.test(uuid)) {
+            this.error = "Invalid UUID format";
             return false;
         }
 
