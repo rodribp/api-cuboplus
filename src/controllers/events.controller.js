@@ -1,31 +1,35 @@
 import { readFile, writeFile, unlink } from "fs";
 import { v4 as uuidv4 } from "uuid";
 import path from 'path';
+const Event = require("../models/event");
 
 const titleLimit = 50;
 const locationLimit = 50;
 const descriptionLimit = 500;
 
 export const getEvents = (req, res) => {
+    const event = new Event();
     const result = {
         status: 0,
         error: ""
     }
 
-    readFile("./src/json/events.json", "utf-8", (err, jsonString) => {
-        if (err) {
-            result.error = err;
-            res.status(500).json(result);
-            return;
-        }
-        result.status = 1;
-        result.data = JSON.parse(jsonString);
+    const events = event.getEvents();
 
-        res.json(result);
-    });
+    if (!events) {
+        result.error = event.getError();
+        res.status(500).json(result);
+        return;
+    }
+
+    result.status = 1;
+    result.data = events;
+
+    res.json(result);
 }
 
 export const getEvent = (req, res) => {
+    const event = new Event();
     const result = {
         status: 0,
         error: ""
@@ -33,31 +37,21 @@ export const getEvent = (req, res) => {
 
     const uuid = req.params.uuid;
 
-    readFile("./src/json/events.json", "utf-8", (err, jsonString) => {
-        if (err) {
-            result.error = "Error reading file";
-            res.status(500).json(result);
-            return;
-        }
+    const eventFound = event.getEventByUuid(uuid);
 
-        const data = JSON.parse(jsonString);
+    if (!eventFound) {
+        result.error = event.getError();
+        res.status(404).json(result);
+        return;
+    }
 
-        const foundEvent = data.find(event => event.uuid === uuid);
-
-        if (!foundEvent) {
-            result.error = "Event not found";
-            res.status(404).json(result);
-            
-        } else {
-            result.status = 1;
-            result.data = foundEvent;
-
-            res.json(result);
-        }
-    })
+    result.status = 1;
+    result.data = eventFound;
+    res.json(result);
 }
 
 export const searchEvents = (req, res) => {
+    const event = new Event();
     const result = {
         status: 0,
         error: ""
@@ -65,33 +59,17 @@ export const searchEvents = (req, res) => {
 
     const input = req.params.input.toLowerCase();
 
-    readFile("./src/json/events.json", "utf-8", (err, jsonString) => {
-        if (err) {
-            result.error = "Error reading file";
-            res.status(500).json(result);
-            return;
-        }
+    const eventsFound = event.searchEvent(input);
 
-        const data = JSON.parse(jsonString);
+    if (!eventsFound) {
+        result.error = event.getError();
+        res.status(404).json(result);
+        return;
+    }
 
-        const foundEvents = data.filter(event => {
-            const titleMatch = event.title.toLowerCase().includes(input);
-            const locationMatch = event.location.toLowerCase().includes(input);
-            const typeMatch = event.type.toLowerCase().includes(input);
-
-            return titleMatch || locationMatch || typeMatch;
-        });
-
-        if ( !foundEvents ) {
-            result.error = "Events not found";
-            res.status(404).json(result);
-        } else {
-            result.status = 1;
-            result.data = foundEvents;
-
-            res.json(result);
-        }
-    });
+    result.status = 1;
+    result.data = eventsFound;
+    res.json(result);
 }
 
 // Función para validar el formato de fecha
@@ -101,6 +79,7 @@ const isValidDateFormat = (dateString) => {
 }
 
 export const setEvent = (req, res) => {
+    const event = new Event();
     const result = {
         status: 0,
         error: ""
@@ -108,7 +87,7 @@ export const setEvent = (req, res) => {
 
     let fileNames = "";
 
-    const { title, location, description, start, timeStart, end, timeEnd, type, eventUrl } = req.body;
+    let { title, location, description, start, timeStart, end, timeEnd, type, eventUrl } = req.body;
     
     try {
         fileNames = req.files;
@@ -120,135 +99,87 @@ export const setEvent = (req, res) => {
 
     let imgArray = fileNames.map((file) => {
         return file.filename;
-    })
+    });
 
     const uuid = uuidv4();
 
-    readFile("./src/json/events.json", "utf-8", (err, jsonString) => {
-        if (err) {
-            result.error = "Error reading file";
-            res.status(500).json(result);
-            return;
-        }
+    if (end === "") end = start;
 
-        const data = JSON.parse(jsonString);
+    if (!event.setUuid(uuid)) {
+        result.error = event.getError();
+        res.status(500).json(result);
+        return;
+    }
 
-        if ( !title ) {
-            result.error = "Title is missing";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.setTitle(title)) {
+        result.error = event.getError();
+        res.status(400).json(result);
+        return;
+    }
 
-        if ( title.length > titleLimit ) {
-            result.error = "Title can't be more than 20 characters long";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.setDescription(description) && description !== "") {
+        result.error = event.getError();
+        res.status(400).json(result);
+        return;
+    }
 
-        if ( !location ) {
-            result.error = "Location is missing";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.setLocation(location)) {
+        result.error = event.getError();
+        res.status(400).json(result);
+        return;
+    }
 
-        if ( location.length > locationLimit ) {
-            result.error = "Location can't be more than 20 characters long";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.setStart(start)) {
+        result.error = event.getError();
+        res.status(400).json(result);
+        return;
+    }
 
-        if ( description.length > descriptionLimit ) {
-            result.error = "Description can't be more than 500 characters long";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.setTimeStart(timeStart)) {
+        result.error = event.getError();
+        res.status(400).json(result);
+        return;
+    }
 
-        if ( !start ) {
-            result.error = "Starting Date is missing";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.setEnd(end)) {
+        result.error = event.getError();
+        res.status(400).json(result);
+        return;
+    }
 
-        if ( !isValidDateFormat(start) || !isValidDateFormat(end) ) {
-            result.error = "Dates formats are not valid";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.setTimeEnd(timeEnd)) {
+        result.error = event.getError();
+        res.status(400).json(result);
+        return;
+    }
 
-        if ( !timeStart ) {
-            result.error = "Starting Time is missing";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.setType(type)) {
+        result.error = event.getError();
+        res.status(400).json(result);
+        return;
+    }
 
-        if ( !end ) {
-            result.error = "Ending Date is missing";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.setUrl(eventUrl)) {
+        result.error = event.getError();
+        res.status(400).json(result);
+        return;
+    }
 
-        if ( !timeEnd ) {
-            result.error = "Ending Time is missing";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.setFiles(imgArray)) {
+        result.error = event.getError();
+        res.status(400).json(result);
+        return;
+    }
 
-        if ( type !== "class" && type !== "meetup" && type !== "organization" ) {
-            result.error = "The type of the event is not valid (class, meetup or organization)";
-            res.status(400).json(result);
-            return;
-        }
+    if (!event.createEvent()) {
+        result.error = event.getError();
+        res.status(500).json(result);
+        return;
+    }
 
-        if ( !type ) {
-            result.error = "Type is missing";
-            res.status(400).json(result);
-            return;
-        }
-
-        if ( imgArray.length == 0 ) {
-            imgArray = ["default.png"];
-        }
-
-        const date1 = new Date(start);
-        const date2 = new Date(end);
-
-        if (date1 > date2) {
-            result.error = "Starting date can't be more than the ending date of the event";
-            res.status(500).json(result);
-            return;
-        }
-
-        const newEvent = {
-            uuid: uuid,
-            title: title,
-            description: description,
-            location: location,
-            start: start,
-            timeStart: timeStart,
-            end: end,
-            timeEnd: timeEnd,
-            type: type,
-            eventUrl: eventUrl,
-            files: imgArray
-        }
-
-        data.push(newEvent);
-
-        const updatedJsonString = JSON.stringify(data, null, 2);
-
-        writeFile("./src/json/events.json", updatedJsonString, err => {
-            if (err) {
-                result.error = "Error writing to the events file";
-                res.status(500).json(result);
-                return;
-            }
-
-            result.status = 1;
-            result.data = newEvent;
-
-            res.json(result);
-        })
-    });
+    result.status = 1;
+    result.data = uuid;
+    res.json(result);
 }
 
 
@@ -366,8 +297,6 @@ export const editEvent = (req, res) => {
         }
         
         let svImgArr = data[foundIndex].files;
-
-        console.log(deleteIndicator.length);
 
         if (deleteIndicator !== undefined) {
             if ((imgArray.length - deleteIndicator.length) + data[foundIndex].files.length > 10) {

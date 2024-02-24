@@ -15,5 +15,88 @@
       "image-1708650322975-18788488.webp",
       "image-1708650322976-75315383.webp"
     ]
+  },
+  {
+    "uuid": "d137b270-76ba-4503-97c5-420cdbd122f1",
+    "title": "Cubo+ second meetup",
+    "description": "",
+    "location": "Moris Rooftop",
+    "start": "2024-03-29 00:00",
+    "timeStart": "17:00",
+    "end": "2024-03-29 00:00",
+    "timeEnd": "21:00",
+    "type": "meetup",
+    "evenUrl": "",
+    "files": [
+      "image-1708818186829-740551556.webp",
+      "image-1708818186831-44930775.webp",
+      "image-1708818186856-501006271.webp",
+      "image-1708818186866-298455451.webp"
+    ]
+  },
+  {
+    "uuid": "070c52d5-aba9-4beb-8055-6eebe8c154fb",
+    "title": "Cubo+ third meetup",
+    "description": "",
+    "location": "Moris Rooftop",
+    "start": "2024-04-26 00:00",
+    "timeStart": "17:00",
+    "end": "2024-04-26 00:00",
+    "timeEnd": "21:00",
+    "type": "meetup",
+    "evenUrl": "",
+    "files": [
+      "image-1708818378483-707743619.webp",
+      "image-1708818378488-579392533.webp",
+      "image-1708818378519-721932364.webp",
+      "image-1708818378526-223262678.webp"
+    ]
+  },
+  {
+    "uuid": "91f8d642-9a40-4716-806d-9e3fea614a06",
+    "title": "Cubo+ fourth meetupasdasdasdasdasdasdasdasdasdasda",
+    "description": "asdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdasdas",
+    "location": "Moris Rooftopasdasdsadadadasdasdsadadasdasdasdasda",
+    "start": "2024-05-24 00:00",
+    "timeStart": "17:00",
+    "end": "2024-05-24 00:00",
+    "timeEnd": "23:59",
+    "type": "organization",
+    "evenUrl": "",
+    "files": []
+  },
+  {
+    "uuid": "b1ecac4a-a7b3-4019-98d3-5579a33464b4",
+    "title": "Cubo+ fifth meetup",
+    "description": "",
+    "location": "Moris Rooftop",
+    "start": "2024-06-22 00:00",
+    "timeStart": "17:00",
+    "end": "2024-06-22 00:00",
+    "timeEnd": "21:00",
+    "type": "meetup",
+    "evenUrl": "",
+    "files": [
+      "image-1708818653167-316861573.webp"
+    ]
+  },
+  {
+    "uuid": "f6b18607-5517-4d25-9a37-23480a9dee4a",
+    "title": "Cubo+ sixth meetup",
+    "description": "",
+    "location": "Moris Rooftop",
+    "start": "2024-07-20 00:00",
+    "timeStart": "17:00",
+    "end": "2024-07-20 00:00",
+    "timeEnd": "21:00",
+    "type": "meetup",
+    "evenUrl": "",
+    "files": [
+      "image-1708818709057-451529603.webp",
+      "image-1708818709062-566091904.webp",
+      "image-1708818709063-61759344.webp",
+      "image-1708818709094-938741974.webp",
+      "image-1708818709101-879288926.webp"
+    ]
   }
 ]
