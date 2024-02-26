@@ -30,7 +30,7 @@ class Validator {
 
     //method to validate a string is not empty and length is capped to a fixed number
     validateString(string, length) {
-        if (!string && !empty) {
+        if (!string) {
             this.error = "Input string is empty";
             return false;
         }
