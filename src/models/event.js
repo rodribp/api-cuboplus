@@ -404,6 +404,43 @@ class Event extends Validator {
         }
     }
 
+    //method to delete an event by uuid
+    deleteEventByUuid(uuid) {
+        try {
+            const jsonString = fs.readFileSync("./src/json/events.json", "utf-8");
+            const data = JSON.parse(jsonString);
+
+            const event = data.find((event) => event.uuid === uuid);
+
+            if (!event) {
+                super.error = "Event not found";
+                return false;
+            }
+
+            event.files.map((file) => {
+                const imgPath = path.join("./src/img/events", file);
+
+                try {
+                    fs.unlinkSync(imgPath);
+                } catch (err) {
+                    super.error = "Error removing file";
+                    return false;
+                }
+            })
+
+            const index = data.indexOf(event);
+            data.splice(index, 1);
+
+            const updatedString = JSON.stringify(data, null, 2);
+
+            fs.writeFileSync("./src/json/events.json", updatedString);
+
+            return true;
+        } catch (err) {
+            super.error = "Error reading file";
+            return false;
+        }
+    }
 }
 
 module.exports = Event;
