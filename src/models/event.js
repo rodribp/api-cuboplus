@@ -1,3 +1,4 @@
+const path = require("path");
 const Validator = require("../helpers/validator");
 const fs = require("fs");
 const typeList = ["class", "meetup", "event", "organization"];
@@ -299,7 +300,7 @@ class Event extends Validator {
                 end: this.end,
                 timeEnd: this.timeEnd,
                 type: this.type,
-                evenUrl: this.url,
+                eventUrl: this.url,
                 files: this.files
             }
 
@@ -319,6 +320,90 @@ class Event extends Validator {
             return false;
         }
     }
+
+    //method to edit an event and rewrite the event on the file
+    editEvent(deleteIndicator, filesToUpload) {
+        try {
+            const jsonString = fs.readFileSync("./src/json/events.json", "utf-8");
+            const data = JSON.parse(jsonString);
+            const index = data.findIndex((event) => event.uuid === this.uuid);
+
+            if (index === -1) {
+                super.error = "Event not found";
+                return false;
+            }
+
+            const event = data[index];
+            const svImgArr = event.files;
+
+            if (deleteIndicator !== undefined) {
+                if ((svImgArr.length - deleteIndicator.length) + filesToUpload.length > 10) {
+                    super.error = "Files cap to upload per event is 10";
+                    return false;
+                }
+
+                if (typeof deleteIndicator !== "object") {
+                    deleteIndicator = [deleteIndicator];
+                }
+
+                if (deleteIndicator.length > 0) {
+                    //We sort the array from more to less to avoid the svImgArr to change positions on the img files
+                    deleteIndicator.sort((a, b) => { return b - a });
+
+                    deleteIndicator.map((indicator) => {
+                        const imgPath = path.join("./src/img/events", svImgArr[indicator]);
+                        svImgArr.splice(indicator, 1);
+                        try {
+                            fs.unlinkSync(imgPath);
+                        } catch (err) {
+                            super.error = "Error deleting image";
+                            console.log(err);
+                            return false;
+                        }
+                    });
+                }
+            }
+
+            
+
+            if (filesToUpload.length === 0) {
+                filesToUpload = svImgArr;
+            } else {
+                filesToUpload = svImgArr.concat(filesToUpload);
+            }
+            
+            const updatedEvent = {
+                uuid: this.uuid,
+                title: this.title,
+                description: this.description,
+                location: this.location,
+                start: this.start,
+                timeStart: this.timeStart,
+                end: this.end,
+                timeEnd: this.timeEnd,
+                type: this.type,
+                eventUrl: this.url,
+                files: filesToUpload
+            }
+            
+            data[index] = updatedEvent;
+
+            const uptadedString = JSON.stringify(data, null, 2);
+
+            try {
+                fs.writeFileSync("./src/json/events.json", uptadedString);
+                return true;
+            } catch (err) {
+                super.error = "Error writing on file";
+                return false;
+            }
+        } catch (err) {
+            super.error = "Error reading file";
+            console.log(err);
+            return false;
+        }
+    }
+
 }
 
 module.exports = Event;
