@@ -87,7 +87,7 @@ export const setEvent = (req, res) => {
 
     let fileNames = "";
 
-    let { title, location, description, start, timeStart, end, timeEnd, type, eventUrl } = req.body;
+   // let { title, location, description, start, timeStart, end, timeEnd, type, eventUrl } = req.body;
     
     try {
         fileNames = req.files;
@@ -111,6 +111,26 @@ export const setEvent = (req, res) => {
         return;
     }
 
+    const validateFields = [
+        { field: "Title", value: req.body.title },
+        { field: "Description", value: req.body.description },
+        { field: "Location", value: req.body.location },
+        { field: "Start", value: req.body.start },
+        { field: "TimeStart", value: req.body.timeStart },
+        { field: "End", value: req.body.end },
+        { field: "TimeEnd", value: req.body.timeEnd },
+        { field: "Type", value: req.body.type },
+        { field: "Url", value: req.body.eventUrl },
+    ];
+
+    for (const field of validateFields) {
+        const methodN = `set${field.field}`;
+        if (!event[methodN](field.value)) {
+            result.error = event.getError();
+            return res.status(400).json(result);
+        }
+    }
+/*
     if (!event.setTitle(title)) {
         result.error = event.getError();
         res.status(400).json(result);
@@ -170,6 +190,8 @@ export const setEvent = (req, res) => {
         res.status(400).json(result);
         return;
     }
+
+*/
 
     if (!event.createEvent()) {
         result.error = event.getError();

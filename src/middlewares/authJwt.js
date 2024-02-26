@@ -9,7 +9,7 @@ export const verifyToken = (req, res, next) => {
         
         if (!token) return res.status(400).json({status: 0, error: "No token provided"});
 
-        const decoded = jwt.verify(token, process.env.SECRET);
+        const decoded = jwt.verify(token,  process.env.SECRET);
 
         readFile('./src/json/user.json', (err, jsonString) => {
             if (err) {
