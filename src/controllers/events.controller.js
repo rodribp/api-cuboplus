@@ -1,11 +1,5 @@
-import { readFile, writeFile, unlink } from "fs";
 import { v4 as uuidv4 } from "uuid";
-import path from 'path';
 const Event = require("../models/event");
-
-const titleLimit = 50;
-const locationLimit = 50;
-const descriptionLimit = 500;
 
 export const getEvents = (req, res) => {
     const event = new Event();
@@ -282,6 +276,7 @@ export const editEvent = (req, res) => {
 }
 
 export const deleteEvent = (req, res) => {
+    const event = new Event();
     const result = {
         status: 0,
         error: ""
@@ -289,52 +284,12 @@ export const deleteEvent = (req, res) => {
 
     const uuid = req.params.uuid;
 
-    readFile("./src/json/events.json", (err, jsonString) => {
-        if (err) {
-            result.error = "Error reading file";
-            res.status(500).json(result);
-            return;
-        }
+    if (!event.deleteEventByUuid(uuid)) {
+        result.error = event.getError();
+        res.status(500).json(result);
+        return;
+    }
 
-        const data = JSON.parse(jsonString);
-
-        const foundEvent = data.find((event) => event.uuid === uuid);
-
-        if (!foundEvent) {
-            result.error = "Event not found";
-            res.status(404).json(result);
-            return;
-        }
-
-        foundEvent.files.map((file) => {
-            const imgPath = path.join('./src/img/events', file);
-
-            unlink(imgPath, (err) => {
-                if (err) {
-                    result.error = "Error deleting image file";
-                    res.status(500).json(result);
-                    return;
-                }
-            })
-        })
-
-        const foundIndex = data.indexOf(foundEvent);
-        
-        data.splice(foundIndex, 1);
-
-        const updatedJsonString = JSON.stringify(data, null, 2);
-
-        writeFile("./src/json/events.json", updatedJsonString, (err) => {
-            if (err) {
-                result.error = "Error writing to the events file";
-                res.status(500).json(result);
-                return;
-            }
-
-            result.status = 1;
-            res.json(result);
-        });
-
-        
-    });
+    result.status = 1;
+    res.json(result);
 }
