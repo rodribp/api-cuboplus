@@ -98,5 +98,18 @@
       "image-1708818709094-938741974.webp",
       "image-1708818709101-879288926.webp"
     ]
+  },
+  {
+    "uuid": "e3ed3545-270d-416f-9b25-54be0cc7cf88",
+    "title": "meetup",
+    "description": "",
+    "location": "Onllne",
+    "start": "2024-02-25 00:00",
+    "timeStart": "00:00",
+    "end": "2024-02-29 00:00",
+    "timeEnd": "03:00",
+    "type": "organization",
+    "evenUrl": "https://github.com/rodribp/api-cuboplus",
+    "files": []
   }
 ]
